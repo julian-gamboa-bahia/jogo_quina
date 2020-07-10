@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Analisador jogo: QUINA</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="https://rawgit.com/gionkunz/chartist-js/master/dist/chartist.min.css">
+        
+        <style>
+            .ct-chart {
+                height: 300px;
+                width: 100%;
+            }
+        </style>
+
+<script>
+
+//Coletamos ás informações desde o URL:
+
+  url_original=window.location.href;
+  var pre_argumentos = url_original.split("?");
+  var argumentos=pre_argumentos[1].split("/");
+	var numero_jogo=argumentos[0];
+
+  //alert("numero_jogo:"+numero_jogo);
+
+  var soma_grafico_esquerdo="";
+  var soma_grafico_direito="";
+  
+  var s1_grafico_esquerdo="";
+  var s2_grafico_esquerdo="";
+  var s3_grafico_esquerdo="";
+  var s4_grafico_esquerdo="";
+  var s5_grafico_esquerdo="";
+
+  var s1_grafico_direito="";
+  var s2_grafico_direito="";
+  var s3_grafico_direito="";
+  var s4_grafico_direito="";
+  var s5_grafico_direito="";
+  
+  var data_grafico_esquerdo="";
+  var data_grafico_direito="";
+
+  indice_esquerdo=numero_jogo;
+  indice_direito=++numero_jogo;
+
+  //carregamos todos os jogos desde o arquivo JSON
+  $.getJSON("quina_sorteios.json").done(function(dados) {
+    soma_grafico_esquerdo=dados[indice_esquerdo].soma;    
+    soma_grafico_direito=dados[indice_direito].soma;    
+//(Esquerdo) Para cada elemento do sorteio
+    s1_grafico_esquerdo=dados[indice_esquerdo].s1;
+    s2_grafico_esquerdo=dados[indice_esquerdo].s2;
+    s3_grafico_esquerdo=dados[indice_esquerdo].s3;
+    s4_grafico_esquerdo=dados[indice_esquerdo].s4;
+    s5_grafico_esquerdo=dados[indice_esquerdo].s5;
+    data_grafico_esquerdo=dados[indice_esquerdo].data_sorteio;
+//(Direito) Para cada elemento do sorteio:
+    s1_grafico_direito=dados[indice_direito].s1;
+    s2_grafico_direito=dados[indice_direito].s2;
+    s3_grafico_direito=dados[indice_direito].s3;
+    s4_grafico_direito=dados[indice_direito].s4;
+    s5_grafico_direito=dados[indice_direito].s5;
+    data_grafico_direito=dados[indice_direito].data_sorteio;
+  });
+  
+</script>
+
+</head>
+    <body>
+
+        <div class="container-fluid">
+            <h1>Analisador Jogo QUINA</h1>
+            <p>Sistema simples de visualização</p>            
+            <div class="row">
+              <div class="col-sm-6" style="background-color:lavender;" >
+                <label id="data-grafico-esquerdo"></label>
+                <br>
+                <label id="grafico-esquerdo"></label>
+                <div class="ct-chart" id="chart-esquerdo"></div>
+                <br>
+                <label id="sorteio-esquerdo"></label>                
+                  
+              </div>
+              <div class="col-sm-6" style="background-color:yellowgreen;">
+                  <label id="data-grafico-direito"></label>
+                  <br>
+                  <label id="grafico-direito"></label>                 
+                  <div class="ct-chart" id="chart-direito"></div>                  
+                  <br>
+                  <label id="sorteio-direito"></label> 
+              </div>           
+            </div>
+          </div>
+        
+
+        <script type="text/javascript" src="https://rawgit.com/gionkunz/chartist-js/master/dist/chartist.js"></script>        
+        <script>   
+          alert("sistema de visualização "); 
+        
+        //DATA de cada sorteio:
+
+        $("#data-grafico-esquerdo").text("Data: "+data_grafico_esquerdo);            
+        $("#data-grafico-direito").text("Data: "+data_grafico_direito);                    
+
+        //Soma de cada sorteio:
+
+        $("#grafico-esquerdo").text("Soma aumulada de: "+soma_grafico_esquerdo);            
+        $("#grafico-direito").text("Soma aumulada de: "+soma_grafico_direito);           
+
+        //Sorteio:
+
+        $("#sorteio-esquerdo").text("Números sortedos:  "+s1_grafico_esquerdo+" "+
+              s2_grafico_esquerdo+" "+
+              s3_grafico_esquerdo+" "+
+              s4_grafico_esquerdo+" "+
+              s5_grafico_esquerdo);            
+        $("#sorteio-direito").text("Números sortedos:  "+s1_grafico_direito+" "+
+              s2_grafico_direito+" "+
+              s3_grafico_direito+" "+
+              s4_grafico_direito+" "+
+              s5_grafico_direito); 
+
+//Grafico esquerdo:
+
+        new Chartist.Line('#chart-esquerdo', {
+          series: [
+            [
+              s1_grafico_esquerdo,
+              s2_grafico_esquerdo,
+              s3_grafico_esquerdo,
+              s4_grafico_esquerdo,
+              s5_grafico_esquerdo
+            ],
+          ]
+        }, {
+          low: 0,
+          showArea: true
+        });
+//Grafico DIREITO:
+
+new Chartist.Line('#chart-direito', {
+          series: [
+            [
+              s1_grafico_direito,
+              s2_grafico_direito,
+              s3_grafico_direito,
+              s4_grafico_direito,
+              s5_grafico_direito  
+            ],
+          ]
+        }, {
+          low: 0,
+          showArea: true
+        });        
+        </script>
+    </body>
+</html>
